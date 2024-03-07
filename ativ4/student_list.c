@@ -114,43 +114,45 @@ bool list_isEmpty(StudentList *list) {
     return list->head == NULL;
 }
 
+// new functions
 Student* list_findByRa(StudentList* list, unsigned int ra) {
     Node* cur = list->head;
 
     while (cur != NULL) {
-        if (student_getRa(cur->student) == ra) {
+        if (cur->student->ra == ra) {
             return cur->student;
         }
         cur = cur->next;
     }
 
-    return NULL;
+    return NULL;  
 }
 
-void list_incrementGrades(StudentList* list, float increment) {
+void list_incrementGrades(StudentList* list, float amount) {
     Node* cur = list->head;
 
     while (cur != NULL) {
-        student_setGrade(cur->student, student_getGrade(cur->student) + increment);
+        cur->student->grade += amount;
         cur = cur->next;
     }
 }
 
-double list_averageGrade(StudentList* list) {
-    if (list_size(list) == 0) {
-        // Evitar divisão por zero se a lista estiver vazia
-        return 0.0;
+float list_averageGrade(StudentList* list) {
+    if (list_isEmpty(list)) {
+        return 0.0;  
     }
 
-    double totalGrades = 0.0;
     Node* cur = list->head;
+    float totalGrade = 0.0;
+    int count = 0;
 
     while (cur != NULL) {
-        totalGrades += student_getGrade(cur->student);
+        totalGrade += cur->student->grade;
+        count++;
         cur = cur->next;
     }
 
-    return totalGrades / list_size(list);
+    return totalGrade / count;
 }
 
 StudentList* list_filterFailed(StudentList* list) {
@@ -158,8 +160,8 @@ StudentList* list_filterFailed(StudentList* list) {
     Node* cur = list->head;
 
     while (cur != NULL) {
-        if (student_getGrade(cur->student) < 6.0) {
-            list_insertFirst(failedList, student_getRa(cur->student), student_getName(cur->student), student_getGrade(cur->student));
+        if (cur->student->grade < 6.0) {
+            list_insertFirst(failedList, cur->student->ra, cur->student->name, cur->student->grade);
         }
         cur = cur->next;
     }
@@ -172,8 +174,8 @@ StudentList* list_filterPassed(StudentList* list) {
     Node* cur = list->head;
 
     while (cur != NULL) {
-        if (student_getGrade(cur->student) >= 6.0) {
-            list_insertFirst(passedList, student_getRa(cur->student), student_getName(cur->student), student_getGrade(cur->student));
+        if (cur->student->grade >= 6.0) {
+            list_insertFirst(passedList, cur->student->ra, cur->student->name, cur->student->grade);
         }
         cur = cur->next;
     }
@@ -186,9 +188,8 @@ StudentList* list_filterExam(StudentList* list) {
     Node* cur = list->head;
 
     while (cur != NULL) {
-        float grade = student_getGrade(cur->student);
-        if (grade < 6.0 && grade >= 4.0) {
-            list_insertFirst(examList, student_getRa(cur->student), student_getName(cur->student), student_getGrade(cur->student));
+        if (cur->student->grade >= 4.0 && cur->student->grade < 6.0) {
+            list_insertFirst(examList, cur->student->ra, cur->student->name, cur->student->grade);
         }
         cur = cur->next;
     }
