@@ -9,7 +9,7 @@ typedef struct node{
 } NodeTree;
 
 
-NodeTree* insert_into_tree(NodeTree *raiz, int num){
+NodeTree* insert_into_treef(NodeTree *raiz, int num){
    if (raiz == NULL){
         NodeTree *aux = malloc(sizeof(NodeTree));
         aux->valor = num;

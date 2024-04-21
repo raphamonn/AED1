@@ -45,6 +45,42 @@ void insert_into_tree_v2(Node **root, int num){
     }
 }
 
+int tree_height(Node * root){
+    if (root == NULL){
+        return -1;
+    }
+    else {
+        int left = tree_height(root->left);
+        int right = tree_height(root->right);
+
+        if(left > right)
+            return left + 1;
+        else 
+            return right + 1;
+    }
+}
+
+int tree_nodes (Node* root){
+    if (root == NULL){
+        return 0;
+    }
+    else {
+        return 1 + tree_nodes(root->left) + tree_nodes(root->right);
+    }
+}
+
+
+int count_sheets (Node * root){
+    if (root == NULL){
+        return 0;
+    }
+    else if (root->left == NULL && root->right == NULL){
+        return 1;
+    }
+    else 
+        return count_sheets(root->left) + count_sheets(root->right);
+}
+
 void print_tree(Node* root) {
     if (root == NULL) {
         return;
@@ -69,6 +105,33 @@ Node * search_in_tree_v1(Node * root,int num) {
     return NULL;
 }
 
+Node * remove_node (Node * root, int num){
+    printf("%d ", root->value);
+    if (root == NULL){
+        printf("\nO nó não esá presente na arvore\n");
+        return NULL;
+    } else {
+        if (root->value == num){
+            // remover o nó se ele for um nó folha
+            if(root->left == NULL && root->right == NULL){
+                free(root);
+                printf("\nbucetinha de cocô\n");
+                return NULL;
+            }
+            else {
+                // nó com filhos
+                printf("este nó possui filhos, não podemos deixa-los orfãos");
+            }
+        } else {
+            if (num < root->value)
+                root->left = remove_node(root->left, num);
+            else
+                root->right = remove_node(root->right, num);
+            return root;
+        }
+    }
+}
+
 
 
 int main () {
@@ -80,15 +143,23 @@ int main () {
     insert_into_tree_v2(&root, 2);
     insert_into_tree_v2(&root, 1);
     insert_into_tree_v2(&root, 10);
+
     print_tree (root);
     printf("\n");
     Node * search_node = search_in_tree_v1(root, 15);
     if (search_node){ 
-        printf("O nó está presente na árvore e é %d ", search_node->value);   
+        printf("\nO nó está presente na árvore e é %d \n", search_node->value);   
     }
     else {
-        printf("O nó não está presente na árvore");
+        printf("\nO nó não está presente na árvore\n");
     }
     
+    printf("\nA altura da árvore é: %d\n", tree_height(root));
+    printf("\nQuantidade de folhas é: %d\n", count_sheets(root));
+
+    root = remove_node(root,10);
+
+    print_tree(root);
+    printf("\n");
     return 0;
 }
